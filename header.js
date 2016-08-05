@@ -1,17 +1,22 @@
 
-var express = require('express');
-var app = express();
+var express  = require('express');
+var app      = express();
 var ip;
-var lang='';
-var platform='';
+var lang     ='';
+var platform ='';
 
-app.get('/',function(require,response){
+app.get('/',function(req,response){
     
-    ip=         require.headers['x-forwarded-for'];//ip for browser
-    platform =  require.headers['user-agent'].split('()')[0];//
-    lang=       require.headers['accept-language'].split(',')[0];//language
+    var regExp  = /\(([^)]+)\)/;
+    var matches = regExp.exec(req.headers['user-agent']); //stract () from user-agent
+
+
+
+    ip          = req.headers['x-forwarded-for'];               //ip for browser
+    platform    = matches[1];                                   //o.s
+    lang        = req.headers['accept-language'].split(',')[0]; //language
     
-    response.send(JSON.stringify({'ipaddress':ip,'language':lang ,'Sofware':platform}));
+    response.send({'ipaddress':ip,'language':lang ,'Sofware':platform});
     
    
 });
